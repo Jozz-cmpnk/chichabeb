@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHICHABEBA — La Obsesión Factory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS VARIABLES ─────────────────────────────────────── */
+    :root {
+      --neon-purple: #bf00ff;
+      --neon-pink:   #ff0080;
+      --neon-cyan:   #00f5ff;
+      --neon-yellow: #ffe600;
+      --bg-dark:     #06000f;
+      --bg-card:     rgba(255,255,255,0.04);
+      --bg-card-border: rgba(255,255,255,0.10);
+      --text-main:   #f0eaff;
+      --text-muted:  #a89bc2;
+      --font-display: 'Bebas Neue', cursive;
+      --font-body:    'Inter', sans-serif;
+    }
+
+    /* ── RESET & BASE ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* ── BACKGROUND MESH ───────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 45% at 15% 20%, rgba(191,0,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 40% at 85% 75%, rgba(0,245,255,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 50% 50%, rgba(255,0,128,0.10) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NOISE GRAIN OVERLAY ───────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── WRAPPER ───────────────────────────────────────────── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+    }
+
+    /* ── KEYFRAMES ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    @keyframes neonPulse {
+      0%,100% { text-shadow:
+        0 0 10px var(--neon-pink),
+        0 0 30px var(--neon-pink),
+        0 0 70px var(--neon-purple),
+        0 0 130px var(--neon-purple); }
+      50% { text-shadow:
+        0 0 5px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 55px var(--neon-pink),
+        0 0 100px var(--neon-pink); }
+    }
+    @keyframes subtitleSlide {
+      from { opacity: 0; letter-spacing: 0.6em; }
+      to   { opacity: 1; letter-spacing: 0.25em; }
+    }
+    @keyframes badgePop {
+      0%   { opacity: 0; transform: scale(0.5) rotate(-8deg); }
+      70%  { transform: scale(1.1) rotate(3deg); }
+      100% { opacity: 1; transform: scale(1) rotate(-2deg); }
+    }
+    @keyframes borderGlow {
+      0%,100% { box-shadow: 0 0 0 1px rgba(191,0,255,0.35), 0 0 20px rgba(191,0,255,0.12); }
+      50%      { box-shadow: 0 0 0 1px rgba(0,245,255,0.4),  0 0 28px rgba(0,245,255,0.16); }
+    }
+    @keyframes scanline {
+      from { top: -4px; }
+      to   { top: 100%; }
+    }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 5rem 0 3rem;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    /* scanline effect on hero */
+    .hero::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(0,245,255,0.6), transparent);
+      animation: scanline 4s linear infinite;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--neon-yellow) 0%, #ff8c00 100%);
+      color: #000;
+      font-family: var(--font-body);
+      font-weight: 900;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.35em 0.85em;
+      border-radius: 3px;
+      margin-bottom: 1.4rem;
+      animation: badgePop 0.7s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 20vw, 12rem);
+      line-height: 0.88;
+      letter-spacing: 0.03em;
+      background: linear-gradient(160deg, #fff 0%, var(--neon-pink) 35%, var(--neon-purple) 65%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: neonPulse 4s ease-in-out infinite, fadeUp 1s 0.1s ease both;
+      filter: drop-shadow(0 0 40px rgba(191,0,255,0.4));
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 4vw, 2rem);
+      letter-spacing: 0.25em;
+      color: var(--neon-cyan);
+      margin-top: 0.6rem;
+      animation: subtitleSlide 1s 0.5s ease both;
+      text-shadow: 0 0 14px rgba(0,245,255,0.6);
+    }
+
+    /* ── DIVIDER ───────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      margin: 2.5rem auto;
+      background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-pink), var(--neon-cyan), transparent);
+      opacity: 0.5;
+    }
+
+    /* ── CARD BASE ─────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 14px;
+      padding: 2rem 1.75rem;
+      margin-bottom: 1.75rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: borderGlow 5s ease-in-out infinite, fadeUp 0.8s ease both;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(191,0,255,0.2), 0 0 0 1px rgba(191,0,255,0.3);
+    }
+
+    /* ── QUESTION CARD ─────────────────────────────────────── */
+    .question-card {
+      border-image: linear-gradient(135deg, var(--neon-purple), var(--neon-pink), var(--neon-cyan)) 1;
+      border-width: 2px;
+      position: relative;
+      overflow: hidden;
+      animation-delay: 0.2s;
+    }
+    .question-card::before {
+      content: '"';
+      position: absolute;
+      top: -0.6rem;
+      left: 1rem;
+      font-family: var(--font-display);
+      font-size: 8rem;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .question-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .question-text {
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.45;
+      background: linear-gradient(135deg, #fff 30%, var(--neon-pink) 80%, var(--neon-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── BODY NARRATIVE CARD ───────────────────────────────── */
+    .narrative-card {
+      animation-delay: 0.35s;
+    }
+    .narrative-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--neon-purple);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .narrative-text {
+      font-size: clamp(0.93rem, 2.2vw, 1.05rem);
+      line-height: 1.8;
+      color: #d4c8e8;
+    }
+
+    /* Highlighted keywords */
+    .kw {
+      font-weight: 700;
+      padding: 0.05em 0.3em;
+      border-radius: 4px;
+    }
+    .kw-pink {
+      color: #000;
+      background: linear-gradient(90deg, var(--neon-pink), #ff5fa0);
+      box-shadow: 0 0 8px rgba(255,0,128,0.5);
+    }
+    .kw-cyan {
+      color: #000;
+      background: linear-gradient(90deg, var(--neon-cyan), #00d4e0);
+      box-shadow: 0 0 8px rgba(0,245,255,0.4);
+    }
+    .kw-purple {
+      color: #fff;
+      background: linear-gradient(90deg, var(--neon-purple), #8800cc);
+      box-shadow: 0 0 8px rgba(191,0,255,0.45);
+    }
+    .kw-yellow {
+      color: #000;
+      background: linear-gradient(90deg, var(--neon-yellow), #ffb300);
+      box-shadow: 0 0 8px rgba(255,230,0,0.4);
+    }
+
+    /* ── CREDITS SECTION ───────────────────────────────────── */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.8s 0.4s ease both;
+      text-shadow: none;
+    }
+
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .artist-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 14px;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      animation: fadeUp 0.8s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .artist-card:nth-child(1) { animation-delay: 0.45s; --accent: var(--neon-pink); }
+    .artist-card:nth-child(2) { animation-delay: 0.58s; --accent: var(--neon-cyan); }
+    .artist-card:nth-child(3) { animation-delay: 0.71s; --accent: var(--neon-purple); }
+
+    .artist-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 100%, var(--accent), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .artist-card:hover::after { opacity: 0.18; }
+    .artist-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.4), 0 0 0 1px var(--accent);
+      border-color: var(--accent);
+    }
+
+    .artist-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 18px var(--accent);
+      color: var(--accent);
+      transition: box-shadow 0.3s ease;
+    }
+    .artist-card:hover .artist-avatar {
+      box-shadow: 0 0 30px var(--accent), 0 0 60px var(--accent);
+    }
+
+    .artist-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.07em;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 0 10px var(--accent);
+    }
+    .artist-role {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .artist-tags {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2em 0.6em;
+      border-radius: 3px;
+      border: 1px solid;
+      color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(0,0,0,0.3);
+    }
+
+    /* ── FOOTER ────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem 1.5rem;
+      position: relative;
+      animation: fadeUp 0.8s 0.9s ease both;
+    }
+    .footer-song {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 3.5vw, 1.5rem);
+      letter-spacing: 0.15em;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-note {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── FLOATING PARTICLES ────────────────────────────────── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      animation: floatParticle linear infinite;
+      opacity: 0;
+    }
+    @keyframes floatParticle {
+      0%   { transform: translateY(105vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.8; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1.5) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── RESPONSIVE TWEAKS ─────────────────────────────────── */
+    @media (max-width: 520px) {
+      .hero { padding: 3.5rem 0 2rem; }
+      .card { padding: 1.5rem 1.25rem; }
+    }
+
+    /* ── SCROLLBAR ─────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a000e; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(var(--neon-purple), var(--neon-pink));
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="wrapper">
+
+    <!-- ── HERO ──────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-badge">✦ DATO CURIOSO ✦</div>
+      <h1 class="hero-title">CHICHABEBA</h1>
+      <p class="hero-subtitle">La Obsesión Factory</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── QUESTION CARD ─────────────────────────────────── -->
+    <div class="card question-card">
+      <p class="question-label">✦ Pregunta destacada</p>
+      <p class="question-text">¿Sabían que esta canción se volvió el himno de un proyecto que acaba de desaparecer?</p>
+    </div>
+
+    <!-- ── NARRATIVE CARD ─────────────────────────────────── -->
+    <div class="card narrative-card">
+      <p class="narrative-label">✦ La historia</p>
+      <p class="narrative-text">
+        'Chichabeba' fue el mega éxito del colectivo mexicano 'La Obsesión Factory'. El mérito fue gigante porque lograron millones de vistas de manera 100% independiente (<span class="kw kw-pink">Yeyo</span> y <span class="kw kw-purple">Viglezz</span> produjeron, escribieron y mezclaron todo ellos mismos). Sin embargo, justo cuando estaban en la cima del éxito dominando el '<span class="kw kw-cyan">perreo mexa</span>' en <span class="kw kw-yellow">TikTok</span>, el colectivo anunció su <span class="kw kw-purple">separación indefinida</span> debido a polémicas internas, dejando a todos sus fans en shock. ¡Esto convierte a 'Chichabeba' en una de las últimas y más grandes joyas que nos dejó esta agrupación antes de su súbita ruptura!
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ── CREDITS ─────────────────────────────────────────── -->
+    <h2 class="section-title">Créditos</h2>
+    <div class="credits-grid">
+
+      <div class="artist-card">
+        <div class="artist-avatar">YM</div>
+        <p class="artist-name">Yeyo MX</p>
+        <p class="artist-role">Productor · Letrista · Ingeniero</p>
+        <div class="artist-tags">
+          <span class="tag">Beats</span>
+          <span class="tag">Rap</span>
+          <span class="tag">Mix</span>
+        </div>
+      </div>
+
+      <div class="artist-card">
+        <div class="artist-avatar">NF</div>
+        <p class="artist-name">Novato El Flow</p>
+        <p class="artist-role">Artista · Voz Principal</p>
+        <div class="artist-tags">
+          <span class="tag">Flow</span>
+          <span class="tag">Perreo</span>
+          <span class="tag">Voz</span>
+        </div>
+      </div>
+
+      <div class="artist-card">
+        <div class="artist-avatar">VG</div>
+        <p class="artist-name">Viglezz</p>
+        <p class="artist-role">Productor · Mezcla · Masterización</p>
+        <div class="artist-tags">
+          <span class="tag">Prod</span>
+          <span class="tag">Master</span>
+          <span class="tag">Sound</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ── FOOTER ──────────────────────────────────────────── -->
+    <footer>
+      <p class="footer-song">Canción: CHICHABEBA</p>
+      <p class="footer-note">La Obsesión Factory &nbsp;·&nbsp; Todos los derechos reservados</p>
+    </footer>
+
+  </div>
+
+  <!-- ── PARTICLES SCRIPT ──────────────────────────────────── -->
+  <script>
+    (function () {
+      const container = document.getElementById('particles');
+      const colors = ['#bf00ff', '#ff0080', '#00f5ff', '#ffe600', '#ff5fa0'];
+      const count = 30;
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 3 + 1.5;
+        p.style.cssText = [
+          `width:${size}px`,
+          `height:${size}px`,
+          `left:${Math.random() * 100}%`,
+          `background:${colors[Math.floor(Math.random() * colors.length)]}`,
+          `animation-duration:${6 + Math.random() * 14}s`,
+          `animation-delay:${Math.random() * 12}s`,
+          `box-shadow:0 0 ${size * 4}px currentColor`
+        ].join(';');
+        p.style.color = p.style.background;
+        container.appendChild(p);
+      }
+
+      // Subtle tilt effect on artist cards
+      document.querySelectorAll('.artist-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width  - 0.5;
+          const y = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transform = `translateY(-6px) scale(1.02) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
